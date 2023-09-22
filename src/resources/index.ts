@@ -1,0 +1,5 @@
+const DEFAULT_CURRENCY_RATE_DATE = 'latest';
+
+export {
+  DEFAULT_CURRENCY_RATE_DATE
+}
