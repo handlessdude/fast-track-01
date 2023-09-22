@@ -1,14 +1,23 @@
 import { RouteRecordRaw } from 'vue-router';
+import { RouteName } from 'src/router/route-name';
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+    children: [
+      {
+        path: '',
+        name: RouteName.RATE_CHARTS,
+        component: () => import('pages/RateChartsPage.vue'),
+      },
+      {
+        path: '/latest',
+        name: RouteName.LATEST_RATES,
+        component: () => import('pages/LatestRatesPage.vue'),
+      },
+    ],
   },
-
-  // Always leave this as last one,
-  // but you can also remove it
   {
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue'),
