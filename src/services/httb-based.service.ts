@@ -1,9 +1,10 @@
 import { AxiosInstance } from 'axios';
+import { api } from 'boot/axios';
 
 export class HttpBasedService {
-  httpClient: AxiosInstance;
+  protected httpClient: AxiosInstance;
 
-  protected constructor(httpClient: AxiosInstance) {
-    this.httpClient = httpClient;
+  constructor() {
+    this.httpClient = api;
   }
 }
