@@ -1,4 +1,4 @@
-interface BarChartData {
+interface ChartData {
   labels: Array<string>;
   datasets: Array<{
     label: string;
@@ -6,4 +6,4 @@ interface BarChartData {
   }>;
 }
 
-export type { BarChartData };
+export type { ChartData };

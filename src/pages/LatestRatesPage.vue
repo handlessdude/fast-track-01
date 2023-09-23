@@ -38,13 +38,21 @@
         class="q-ma-md"
       />
     </div>
-    <Bar
+    <div
       v-else-if="
-        bar && baseCurrency && quoteCurrencies && quoteCurrencies.length
+        barData && baseCurrency && quoteCurrencies && quoteCurrencies.length
       "
-      :data="bar"
-      :options="options"
-    />
+      class="full-width row full-width"
+    >
+      <div class="column col-6">
+        <div class="text-h6 q-mb-md">Bar chart</div>
+        <Bar :data="barData" :options="barOptions" />
+      </div>
+      <div class="column col-6">
+        <div class="text-h6 q-mb-md">Pie chart</div>
+        <Pie :data="pieData" :options="pieOptions" />
+      </div>
+    </div>
     <div v-else class="placeholder__container row justify-center q-mt-md">
       <div class="text-h6 text-grey-5">
         <q-icon name="stacked_line_chart" />
@@ -67,19 +75,22 @@ import {
   BarElement,
   CategoryScale,
   LinearScale,
+  ArcElement,
 } from 'chart.js';
-import { Bar } from 'vue-chartjs';
+import { Bar, Pie } from 'vue-chartjs';
 import { RatesSchemaOut } from 'src/models/currency';
 import { GenericSchema, MaybeNull } from 'src/models';
 import { useQuasar } from 'quasar';
-import { BarChartData } from 'src/models/bar-chart';
+import { ChartData } from 'src/models/bar-chart';
+import { stringToColour } from 'src/utils';
 ChartJS.register(
   CategoryScale,
   LinearScale,
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ArcElement
 );
 
 const { items: currencies } = storeToRefs(useCurrencyTypesStore());
@@ -87,18 +98,27 @@ const { items: currencies } = storeToRefs(useCurrencyTypesStore());
 const baseCurrency: Ref<MaybeNull<GenericSchema>> = ref(null);
 const quoteCurrencies: Ref<MaybeNull<Array<GenericSchema>>> = ref([]);
 
-const bar: Ref<MaybeNull<BarChartData>> = ref(null);
-const options = { responsive: true };
+const barData: Ref<MaybeNull<ChartData>> = ref(null);
+const pieData: Ref<MaybeNull<ChartData>> = ref(null);
+const barOptions = { responsive: true };
 
-const ratesSchemaToBar = (schema: RatesSchemaOut) => ({
-  labels: Object.keys(schema.rates),
-  datasets: [
-    {
-      label: `Rates for ${schema.date}`,
-      data: Object.values(schema.rates),
-    },
-  ],
-});
+const pieOptions = {
+  responsive: true,
+};
+
+const ratesSchemaToChart = (schema: RatesSchemaOut) => {
+  const labels = Object.keys(schema.rates);
+  return {
+    labels,
+    datasets: [
+      {
+        label: `Rates for ${schema.date}`,
+        backgroundColor: labels.map((label) => stringToColour(label)),
+        data: Object.values(schema.rates),
+      },
+    ],
+  };
+};
 
 const ratesLoading = ref(false);
 const $q = useQuasar();
@@ -114,7 +134,9 @@ watch(
         from: newBase.id,
         to: newQuotes.map((item) => item.id),
       });
-      bar.value = ratesSchemaToBar(newVal);
+      const chartData = ratesSchemaToChart(newVal);
+      barData.value = chartData;
+      pieData.value = chartData;
       console.log(newVal);
     } catch (e) {
       $q.notify({
