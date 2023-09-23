@@ -29,13 +29,16 @@
       class="full-width row full-width q-mt-lg"
     >
       <Line :data="lineData" :options="options" />
+      <q-table
+        title="Statistics"
+        :rows="statistics"
+        :columns="rateStatisticsColumns"
+        row-key="name"
+        flat
+        class="full-width q-mt-md"
+      />
     </div>
-    <div v-else class="placeholder__container row justify-center q-mt-xl">
-      <div class="text-h6 text-grey-5">
-        <q-icon name="stacked_line_chart" />
-        Pick currencies to form chart...
-      </div>
-    </div>
+    <NoDataPlaceholder v-else class="q-mt-xl" />
   </q-page>
 </template>
 
@@ -62,6 +65,10 @@ import { ChartData } from 'src/models/bar-chart';
 import { stringToColour } from 'src/utils';
 import DatePeriodInput from 'components/DatePeriodInput.vue';
 import CurrencyPairInput from 'components/CurrencyPairInput.vue';
+import { rateStatisticsColumns } from 'src/resources/rate-statistics-columns';
+import { Statistics } from 'src/models/math';
+import { describe } from 'src/utils/math';
+import NoDataPlaceholder from 'components/NoDataPlaceholder.vue';
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -81,6 +88,7 @@ const lineData: Ref<MaybeNull<ChartData>> = ref(null);
 const options = { responsive: true };
 
 const period: Ref<Period> = ref({});
+const statistics: Ref<Array<{ name: string } & Statistics>> = ref([]);
 
 const ratesSchemaToChart = (schema: RatesSchemaOut) => {
   const labels = Object.keys(schema.rates);
@@ -114,6 +122,10 @@ watch(
         to: newQuotes.map((item) => item.id),
       });
       lineData.value = ratesSchemaToChart(newVal);
+      statistics.value = lineData.value.datasets.map((ds) => ({
+        name: ds.label,
+        ...describe(ds.data),
+      }));
       console.log(newVal);
     } catch (e) {
       $q.notify({
@@ -130,3 +142,14 @@ watch(
   }
 );
 </script>
+
+<style lang="scss">
+.q-table__title {
+  font-weight: 500;
+}
+
+.q-table__top {
+  padding-left: 0;
+  padding-right: 0;
+}
+</style>

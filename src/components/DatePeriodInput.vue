@@ -11,7 +11,7 @@
       class="col"
     >
       <template v-slot:append>
-        <q-icon name="calendar_month" class="cursor-pointer">
+        <q-icon name="calendar_month" color="grey-6" class="cursor-pointer">
           <q-popup-proxy cover transition-show="scale" transition-hide="scale">
             <q-date v-model="firstDate" :mask="Q_DATE_MASK">
               <div class="row items-center justify-end">
@@ -39,7 +39,7 @@
       class="col"
     >
       <template v-slot:append>
-        <q-icon name="calendar_month" class="cursor-pointer">
+        <q-icon name="calendar_month" color="grey-6" class="cursor-pointer">
           <q-popup-proxy cover transition-show="scale" transition-hide="scale">
             <q-date v-model="lastDate" :mask="Q_DATE_MASK">
               <div class="row items-center justify-end">
@@ -68,14 +68,6 @@ const Q_DATE_MASK = 'YYYY-MM-DD';
 const getFormattedDate = (dateString: Date | null | undefined | string) => {
   if (dateString) {
     return date.formatDate(dateString, Q_DATE_MASK);
-  }
-  return '';
-};
-
-const extractFormattedDate = (dateString: string) => {
-  const dateValue = date.extractDate(dateString, Q_DATE_MASK);
-  if (dateValue) {
-    return date.formatDate(dateValue, Q_DATE_MASK);
   }
   return '';
 };

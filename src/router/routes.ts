@@ -9,7 +9,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         name: RouteName.RATE_CHARTS,
-        component: () => import('pages/RateChartsPage.vue'),
+        component: () => import('pages/RatesOverTimePage.vue'),
       },
       {
         path: '/latest',

@@ -32,12 +32,7 @@
         <Pie :data="pieData" :options="pieOptions" />
       </div>
     </div>
-    <div v-else class="placeholder__container row justify-center q-mt-xl">
-      <div class="text-h6 text-grey-5">
-        <q-icon name="stacked_line_chart" />
-        Pick currencies to form chart...
-      </div>
-    </div>
+    <NoDataPlaceholder v-else class="q-mt-xl" />
   </q-page>
 </template>
 
@@ -61,6 +56,7 @@ import { useQuasar } from 'quasar';
 import { ChartData } from 'src/models/bar-chart';
 import { stringToColour } from 'src/utils';
 import CurrencyPairInput from 'components/CurrencyPairInput.vue';
+import NoDataPlaceholder from 'components/NoDataPlaceholder.vue';
 ChartJS.register(
   CategoryScale,
   LinearScale,
