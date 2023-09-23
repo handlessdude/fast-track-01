@@ -1,17 +1,17 @@
 <template>
-  <div class="row no-wrap">
+  <div class="row no-wrap justify-start full-width">
     <q-input
       v-model="firstDate"
       outlined
       dense
       :mask="DATE_INPUT_MASK"
-      class="margin-right-generic left__input"
       :rules="validationRules"
       label="From"
       hide-bottom-space
+      class="col"
     >
       <template v-slot:append>
-        <q-icon name="app:calendar" class="cursor-pointer not-active-icon">
+        <q-icon name="calendar_month" class="cursor-pointer not-active-icon">
           <q-popup-proxy cover transition-show="scale" transition-hide="scale">
             <q-date v-model="firstDate" :mask="Q_DATE_MASK">
               <div class="row items-center justify-end">
@@ -22,19 +22,20 @@
         </q-icon>
       </template>
     </q-input>
+    <div class="text-h6 q-mx-md">-</div>
     <q-input
       ref="lastDateRef"
       v-model="lastDate"
       outlined
       dense
       :mask="DATE_INPUT_MASK"
-      class="right__input"
       label="To"
       hide-bottom-space
       :rules="lastDateValidationRules"
+      class="col"
     >
       <template v-slot:append>
-        <q-icon name="app:calendar" class="cursor-pointer not-active-icon">
+        <q-icon name="calendar_month" class="cursor-pointer not-active-icon">
           <q-popup-proxy cover transition-show="scale" transition-hide="scale">
             <q-date v-model="lastDate" :mask="Q_DATE_MASK">
               <div class="row items-center justify-end">
@@ -52,7 +53,7 @@
 import { ref, watch } from 'vue';
 import { QInput, ValidationRule } from 'quasar';
 import { date } from 'quasar';
-import { MaybeNull } from 'src/models';
+import { MaybeNull, Period } from 'src/models';
 import { makeVModelFromProps } from 'src/utils';
 import dayjs from 'dayjs';
 
@@ -75,11 +76,6 @@ const extractFormattedDate = (dateString: string) => {
   return '';
 };
 
-interface Period {
-  to: MaybeNull<string>;
-  from: MaybeNull<string>;
-}
-
 interface PeriodDateInterface {
   modelValue: Period;
 }
@@ -95,40 +91,27 @@ const firstDate = ref(getFormattedDate(modelValue.value.from));
 const lastDate = ref(getFormattedDate(modelValue.value.to));
 
 watch(firstDate, (newVal) => {
-  if (newVal) {
-    const crossBrowserFormat = extractFormattedDate(newVal);
-    const [dateWithoutTimezone] = new Date(crossBrowserFormat)
-      .toISOString()
-      .split('.');
-    modelValue.value.from = dateWithoutTimezone;
-  }
+  modelValue.value.from = newVal;
   lastDateRef.value?.validate();
 });
 
 watch(lastDate, (newVal) => {
-  if (newVal) {
-    const crossBrowserFormat = extractFormattedDate(newVal);
-    const [dateWithoutTimezone] = new Date(crossBrowserFormat)
-      .toISOString()
-      .split('.');
-    modelValue.value.to = dateWithoutTimezone;
-  }
+  modelValue.value.to = newVal;
 });
 
 const isValidDate = (value: string) =>
   dayjs(value, Q_DATE_MASK, true).isValid() || 'Date is invalid';
-const isNotEmptyField = <T>(value: T) =>
-  !!value || t('validationRules.required');
+const isNotEmptyField = <T>(value: T) => !!value || 'Field required';
 
 const getTimestamp = (d: string, mask = Q_DATE_MASK) =>
   date.extractDate(d, mask).getTime() / 1000;
 
 const lastDateValidationRules: ValidationRule[] = [
-  (val) => !val || isValidDate(val) || t('validationRules.invalidDate'),
+  (val) => !val || isValidDate(val) || 'Invalid date',
   (val) =>
     !val ||
     (firstDate.value && getTimestamp(firstDate.value) < getTimestamp(val)) ||
-    t('inputs.period.endDate.rules.laterThanStart'),
+    'End date is before the start date',
 ];
 
 const validationRules = [isValidDate, isNotEmptyField];

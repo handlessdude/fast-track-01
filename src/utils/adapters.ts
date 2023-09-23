@@ -7,7 +7,7 @@ const omitProperty = <T extends object>(obj: T, propertyName: keyof T) => {
 };
 
 const periodAdapter = (period: MaybeUndefined<Period>) => {
-  if (!period) {
+  if (!period || (!period.to && !period.from)) {
     return DEFAULT_CURRENCY_RATE_DATE;
   }
   if (period.to) {

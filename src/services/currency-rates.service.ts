@@ -1,15 +1,14 @@
 import { HttpBasedService } from 'src/services/httb-based.service';
 import { RatesQueryParams, RatesSchemaOut } from 'src/models/currency';
-import { mapEntries, periodAdapter } from 'src/utils/adapters';
+import { mapEntries, omitProperty, periodAdapter } from 'src/utils/adapters';
 
 const BASE_PATH = '/';
 
 const sanitizeParams = (params?: Partial<RatesQueryParams>) => {
   return (
     params &&
-    mapEntries(params, {
+    mapEntries(omitProperty(params, 'period'), {
       valueMap: {
-        period: undefined,
         to: (val: Array<string> | undefined) => val && val.join(','),
       },
     })

@@ -19,7 +19,7 @@
           label="Quote currencies"
           option-label="name"
           :options="currencies"
-          class="col-6"
+          class="col"
           multiple
           clearable
           outlined
@@ -27,6 +27,11 @@
           :option-disable="quoteOptionDisabled"
         />
       </div>
+      <div class="text-h6 q-mt-lg q-mb-md">Time period</div>
+      <DatePeriodInput
+        v-model="period"
+        class="row items-start justify-start full-width col"
+      />
     </q-form>
     <div v-if="ratesLoading" class="preloader__container row justify-center">
       <q-circular-progress
@@ -74,10 +79,11 @@ import {
 } from 'chart.js';
 import { Line } from 'vue-chartjs';
 import { RatesSchemaOut } from 'src/models/currency';
-import { GenericSchema, MaybeNull } from 'src/models';
+import { GenericSchema, MaybeNull, Period } from 'src/models';
 import { useQuasar } from 'quasar';
 import { ChartData } from 'src/models/bar-chart';
 import { stringToColour } from 'src/utils';
+import DatePeriodInput from 'components/DatePeriodInput.vue';
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -98,6 +104,8 @@ const quoteCurrencies: Ref<MaybeNull<Array<GenericSchema>>> = ref([]);
 const lineData: Ref<MaybeNull<ChartData>> = ref(null);
 const options = { responsive: true };
 
+const period: Ref<Period> = ref({});
+
 const ratesSchemaToChart = (schema: RatesSchemaOut) => {
   const labels = Object.keys(schema.rates);
   return {
@@ -114,18 +122,18 @@ const ratesSchemaToChart = (schema: RatesSchemaOut) => {
 
 const ratesLoading = ref(false);
 const $q = useQuasar();
+
 watch(
-  [baseCurrency, quoteCurrencies],
-  async ([newBase, newQuotes]) => {
-    if (!newBase || !newQuotes || !newQuotes.length) {
+  [baseCurrency, quoteCurrencies, period],
+  async ([newBase, newQuotes, newPeriod]) => {
+    if (!newBase || !newQuotes || !newQuotes.length || !newPeriod.from) {
       return;
     }
     try {
       ratesLoading.value = true;
+      console.log(period.value);
       const newVal = await currencyRatesService.getItems({
-        period: {
-          from: '2019-12-30',
-        },
+        period: period.value,
         from: newBase.id,
         to: newQuotes.map((item) => item.id),
       });
@@ -142,6 +150,7 @@ watch(
   },
   {
     immediate: true,
+    deep: true,
   }
 );
 

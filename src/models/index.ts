@@ -1,5 +1,5 @@
 interface Period {
-  from: string;
+  from?: string;
   to?: string;
 }
 
