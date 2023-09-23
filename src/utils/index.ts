@@ -1,3 +1,5 @@
+import { computed } from 'vue';
+
 const copy = <T>(obj: T) => JSON.parse(JSON.stringify(obj));
 
 const stringToColour = (str: string) => {
@@ -13,4 +15,15 @@ const stringToColour = (str: string) => {
   return colour;
 };
 
-export { copy, stringToColour };
+const makeVModelFromProps = <IProps, EmitOption>(
+  propName: keyof IProps,
+  props: IProps,
+  emit: (event: EmitOption, ...args: any[]) => void
+) =>
+  computed({
+    get: () => props[propName],
+    set: (value: IProps[keyof IProps]) =>
+      emit(`update:${String(propName)}` as EmitOption, value),
+  });
+
+export { copy, stringToColour, makeVModelFromProps };

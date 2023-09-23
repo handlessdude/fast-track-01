@@ -13,7 +13,7 @@ const periodAdapter = (period: MaybeUndefined<Period>) => {
   if (period.to) {
     return `${period.from}..${period.to}`;
   }
-  return period.from;
+  return `${period.from}..`;
 };
 
 function isCallback<T>(maybeFunc: T | unknown): maybeFunc is CallableFunction {
