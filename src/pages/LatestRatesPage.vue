@@ -2,31 +2,10 @@
   <q-page padding class="q-gutter-y-md">
     <q-form class="column">
       <div class="text-h6 q-mb-md">Currency pair</div>
-      <div class="row items-start justify-start">
-        <q-select
-          v-model="baseCurrency"
-          label="Base currency"
-          option-label="name"
-          :options="currencies"
-          class="col"
-          clearable
-          outlined
-          dense
-        />
-        <div class="text-h6 q-mx-md">/</div>
-        <q-select
-          v-model="quoteCurrencies"
-          label="Quote currencies"
-          option-label="name"
-          :options="currencies"
-          class="col-6"
-          multiple
-          clearable
-          outlined
-          dense
-          :option-disable="quoteOptionDisabled"
-        />
-      </div>
+      <CurrencyPairInput
+        v-model:base-currency="baseCurrency"
+        v-model:quote-currencies="quoteCurrencies"
+      />
     </q-form>
     <div v-if="ratesLoading" class="preloader__container row justify-center">
       <q-circular-progress
@@ -53,7 +32,7 @@
         <Pie :data="pieData" :options="pieOptions" />
       </div>
     </div>
-    <div v-else class="placeholder__container row justify-center q-mt-md">
+    <div v-else class="placeholder__container row justify-center q-mt-xl">
       <div class="text-h6 text-grey-5">
         <q-icon name="stacked_line_chart" />
         Pick currencies to form chart...
@@ -65,8 +44,6 @@
 <script setup lang="ts">
 import { Ref, ref, watch } from 'vue';
 import { currencyRatesService } from 'src/services/currency-rates.service';
-import { useCurrencyTypesStore } from 'stores/currency-types.store';
-import { storeToRefs } from 'pinia';
 import {
   Chart as ChartJS,
   Title,
@@ -83,6 +60,7 @@ import { GenericSchema, MaybeNull } from 'src/models';
 import { useQuasar } from 'quasar';
 import { ChartData } from 'src/models/bar-chart';
 import { stringToColour } from 'src/utils';
+import CurrencyPairInput from 'components/CurrencyPairInput.vue';
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -92,8 +70,6 @@ ChartJS.register(
   Legend,
   ArcElement
 );
-
-const { items: currencies } = storeToRefs(useCurrencyTypesStore());
 
 const baseCurrency: Ref<MaybeNull<GenericSchema>> = ref(null);
 const quoteCurrencies: Ref<MaybeNull<Array<GenericSchema>>> = ref([]);
@@ -151,7 +127,4 @@ watch(
     immediate: true,
   }
 );
-
-const quoteOptionDisabled = (option: GenericSchema) =>
-  !!baseCurrency.value && baseCurrency.value.id === option.id;
 </script>

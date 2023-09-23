@@ -2,36 +2,10 @@
   <q-page padding class="q-gutter-y-md">
     <q-form class="column">
       <div class="text-h6 q-mb-md">Currency pair</div>
-      <div class="row items-start justify-start">
-        <q-select
-          v-model="baseCurrency"
-          label="Base currency"
-          option-label="name"
-          :options="currencies"
-          class="col"
-          clearable
-          outlined
-          dense
-        />
-        <div
-          class="text-grey-5 text-h6 q-py-xs q-mx-md row justify-center"
-          style="width: 20px"
-        >
-          <div>/</div>
-        </div>
-        <q-select
-          v-model="quoteCurrencies"
-          label="Quote currencies"
-          option-label="name"
-          :options="currencies"
-          class="col"
-          multiple
-          clearable
-          outlined
-          dense
-          :option-disable="quoteOptionDisabled"
-        />
-      </div>
+      <CurrencyPairInput
+        v-model:base-currency="baseCurrency"
+        v-model:quote-currencies="quoteCurrencies"
+      />
       <div class="text-h6 q-mt-lg q-mb-md">Time period</div>
       <DatePeriodInput
         v-model="period"
@@ -52,11 +26,11 @@
       v-else-if="
         lineData && baseCurrency && quoteCurrencies && quoteCurrencies.length
       "
-      class="full-width row full-width"
+      class="full-width row full-width q-mt-lg"
     >
       <Line :data="lineData" :options="options" />
     </div>
-    <div v-else class="placeholder__container row justify-center q-mt-lg">
+    <div v-else class="placeholder__container row justify-center q-mt-xl">
       <div class="text-h6 text-grey-5">
         <q-icon name="stacked_line_chart" />
         Pick currencies to form chart...
@@ -68,8 +42,6 @@
 <script setup lang="ts">
 import { Ref, ref, watch } from 'vue';
 import { currencyRatesService } from 'src/services/currency-rates.service';
-import { useCurrencyTypesStore } from 'stores/currency-types.store';
-import { storeToRefs } from 'pinia';
 import {
   Chart as ChartJS,
   Title,
@@ -89,6 +61,7 @@ import { useQuasar } from 'quasar';
 import { ChartData } from 'src/models/bar-chart';
 import { stringToColour } from 'src/utils';
 import DatePeriodInput from 'components/DatePeriodInput.vue';
+import CurrencyPairInput from 'components/CurrencyPairInput.vue';
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -100,8 +73,6 @@ ChartJS.register(
   PointElement,
   LineElement
 );
-
-const { items: currencies } = storeToRefs(useCurrencyTypesStore());
 
 const baseCurrency: Ref<MaybeNull<GenericSchema>> = ref(null);
 const quoteCurrencies: Ref<MaybeNull<Array<GenericSchema>>> = ref([]);
@@ -158,7 +129,4 @@ watch(
     deep: true,
   }
 );
-
-const quoteOptionDisabled = (option: GenericSchema) =>
-  !!baseCurrency.value && baseCurrency.value.id === option.id;
 </script>
