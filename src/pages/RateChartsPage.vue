@@ -3,7 +3,7 @@
     <q-form @submit="refreshData" class="column q-gutter-y-md">
       <div class="column">
         <div class="text-h6">Currency pair</div>
-        <div class="row q-gutter-x-lg">
+        <div class="row q-gutter-x-lg items-center">
           <q-select
             v-model="baseCurrency"
             label="Base currency"
@@ -11,6 +11,7 @@
             :options="currencies"
             class="col-2"
           />
+          <div class="text-h6">/</div>
           <q-select
             v-model="quoteCurrency"
             label="Quote currency"
@@ -19,15 +20,15 @@
             multiple
             class="col-2"
           />
+          <q-btn
+            type="submit"
+            label="Make request"
+            class="col-2 no-padding"
+            no-caps
+            icon="search"
+            style="min-width: 170px"
+          />
         </div>
-      </div>
-      <div class="row">
-        <q-btn
-          type="submit"
-          label="Make request"
-          class="col-2 no-padding"
-          no-caps
-        />
       </div>
     </q-form>
   </q-page>
@@ -38,7 +39,7 @@ import { onMounted, ref, Ref } from 'vue';
 import { RatesSchemaOut } from 'src/models/currency';
 import { MaybeNull } from 'src/models';
 import { currencyRatesService } from 'src/services/currency-rates.service';
-import { useCurrencyTypesStore } from 'stores/example-store';
+import { useCurrencyTypesStore } from 'stores/currency-types.store';
 import { storeToRefs } from 'pinia';
 
 const data: Ref<MaybeNull<RatesSchemaOut>> = ref(null);
@@ -48,7 +49,9 @@ const baseCurrency = ref(currencies.value.find((item) => item.id === 'USD'));
 const quoteCurrency = ref(currencies.value.find((item) => item.id === 'EUR'));
 
 const refreshData = async () => {
-  data.value = await currencyRatesService.getItems();
+  const newVal = await currencyRatesService.getItems();
+  data.value = newVal;
+  console.log(newVal);
 };
 
 onMounted(refreshData);

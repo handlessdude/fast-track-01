@@ -1,11 +1,8 @@
 import { defineStore } from 'pinia';
 import { Ref, ref } from 'vue';
 import { currencyTypesService } from 'src/services/currency-types.service';
+import { GenericSchema } from 'src/models';
 
-interface GenericSchema {
-  id: string;
-  name: string;
-}
 export const useCurrencyTypesStore = defineStore('currency-types', () => {
   const items: Ref<Array<GenericSchema>> = ref([]);
   const itemsLoaded = ref(false);

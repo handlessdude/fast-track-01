@@ -13,6 +13,7 @@ interface RatesSchemaOut {
   start_date?: string;
   end_date?: string;
   date?: string;
+  rates: { [Key: string]: number };
 }
 
 export type { RatesSchemaOut, RatesQueryParams };

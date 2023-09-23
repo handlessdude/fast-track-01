@@ -7,8 +7,9 @@ type MaybeUndefined<T> = T | undefined;
 
 type MaybeNull<T> = T | null;
 
-export type {
-  Period,
-  MaybeUndefined,
-  MaybeNull
+interface GenericSchema {
+  id: string;
+  name: string;
 }
+
+export type { Period, MaybeUndefined, MaybeNull, GenericSchema };
