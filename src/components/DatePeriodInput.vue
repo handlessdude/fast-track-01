@@ -11,7 +11,7 @@
       class="col"
     >
       <template v-slot:append>
-        <q-icon name="calendar_month" class="cursor-pointer not-active-icon">
+        <q-icon name="calendar_month" class="cursor-pointer">
           <q-popup-proxy cover transition-show="scale" transition-hide="scale">
             <q-date v-model="firstDate" :mask="Q_DATE_MASK">
               <div class="row items-center justify-end">
@@ -22,7 +22,11 @@
         </q-icon>
       </template>
     </q-input>
-    <div class="text-h6 q-mx-md">-</div>
+    <q-icon
+      color="grey-5"
+      class="text-h6 q-py-sm q-mx-md"
+      name="arrow_forward"
+    />
     <q-input
       ref="lastDateRef"
       v-model="lastDate"
@@ -35,7 +39,7 @@
       class="col"
     >
       <template v-slot:append>
-        <q-icon name="calendar_month" class="cursor-pointer not-active-icon">
+        <q-icon name="calendar_month" class="cursor-pointer">
           <q-popup-proxy cover transition-show="scale" transition-hide="scale">
             <q-date v-model="lastDate" :mask="Q_DATE_MASK">
               <div class="row items-center justify-end">

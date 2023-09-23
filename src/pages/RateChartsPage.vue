@@ -13,7 +13,12 @@
           outlined
           dense
         />
-        <div class="text-h6 q-mx-md">/</div>
+        <div
+          class="text-grey-5 text-h6 q-py-xs q-mx-md row justify-center"
+          style="width: 20px"
+        >
+          <div>/</div>
+        </div>
         <q-select
           v-model="quoteCurrencies"
           label="Quote currencies"
@@ -51,7 +56,7 @@
     >
       <Line :data="lineData" :options="options" />
     </div>
-    <div v-else class="placeholder__container row justify-center q-mt-md">
+    <div v-else class="placeholder__container row justify-center q-mt-lg">
       <div class="text-h6 text-grey-5">
         <q-icon name="stacked_line_chart" />
         Pick currencies to form chart...
