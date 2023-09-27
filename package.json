@@ -4,7 +4,7 @@
   "description": "Cross-platform development fast track project",
   "productName": "Statistics widgets demo",
   "author": "Elisa <handlessdude@gmail.com>",
-  "private": true,
+  "private": false,
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
