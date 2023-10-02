@@ -1,6 +1,10 @@
 # Statistics widgets demo (fast-track-01)
 
 Cross-platform development fast track project
+Demo available at https://handlessdude.github.io/
+
+![image](https://github.com/handlessdude/fast-track-01/assets/61969421/5d015228-fc0c-4637-8e1e-4fec8e3cdac8)
+
 
 ## Install the dependencies
 ```bash
